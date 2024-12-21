@@ -1,0 +1,24 @@
+x-app: &app
+  build:
+    context: dev/
+    args:
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      no_proxy: ${no_proxy}
+
+x-backend: &backend
+  <<: *app
+  stdin_open: true
+  tty: true
+  volumes:
+    - .:/app:cached
+
+services:
+  app:
+    <<: *backend
+    command: sleep infinity
+  web:
+    <<: *backend
+    command: cargo run
+    ports:
+      - "8082:8080"

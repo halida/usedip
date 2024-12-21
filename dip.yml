@@ -1,0 +1,22 @@
+version: '8.1.0'
+
+environment:
+  http_proxy: ${http_proxy}
+  https_proxy: ${https_proxy}
+  no_proxy: ${no_proxy}
+
+compose:
+  files:
+    - docker-compose.dev.yml
+  project_name: testdip
+  command: docker compose
+
+interaction:
+  bash:
+    description: Open a Bash shell
+    service: app
+    command: /bin/bash
+  web:
+    description: build project
+    service: web
+    compose_run_options: [service-ports]
