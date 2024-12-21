@@ -1,18 +1,27 @@
 # 使用官方 Rust 镜像作为基础镜像
 FROM rust:1.74-slim-bullseye AS builder
 
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
+ENV http_proxy=$http_proxy
+ENV https_proxy=$https_proxy
+ENV no_proxy=$no_proxy
+
+
 # 设置工作目录
 WORKDIR /app
 
 # 将 Cargo.toml 和 Cargo.lock 复制到工作目录
 COPY Cargo.toml Cargo.lock ./
 
+# 复制源代码
+COPY src ./src
+
 # 下载依赖并缓存
 RUN cargo generate-lockfile
 RUN cargo build --release
-
-# 复制源代码
-COPY src ./src
 
 # 构建发布版本
 RUN cargo build --release
